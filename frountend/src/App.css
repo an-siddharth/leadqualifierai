@@ -1,0 +1,19 @@
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #0b1120;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 36px;
+  color: #f8fafc;
+}
+
+.main-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+}

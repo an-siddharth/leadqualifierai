@@ -1,0 +1,90 @@
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 30px;
+}
+
+.header-title h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.header-title p {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 7px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #111c30;
+  border: 1px solid #263449;
+  border-radius: 9px;
+  padding: 11px 14px;
+  color: #94a3b8;
+  width: 250px;
+}
+
+.header-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  width: 100%;
+  font-size: 13px;
+}
+
+.header-search input::placeholder {
+  color: #64748b;
+}
+
+.notification-button {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+}
+
+.notification-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  height: 7px;
+  width: 7px;
+  background: #3b82f6;
+  border-radius: 50%;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #cbd5e1;
+}
+
+.user-profile h4 {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user-profile p {
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 3px;
+}
