@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "./LeadsTable.css";
 
 interface Lead {
@@ -17,6 +18,7 @@ function LeadsTable() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -42,6 +44,10 @@ function LeadsTable() {
   if (loading) return <p>Loading leads...</p>;
   if (error) return <p>{error}</p>;
 
+  const recentLeads = [...leads]
+    .sort((a, b) => b.id - a.id)
+    .slice(0, 5);
+
   return (
     <section className="leads-section">
       <div className="leads-section-header">
@@ -50,7 +56,10 @@ function LeadsTable() {
           <p>Latest leads from your CRM database</p>
         </div>
 
-        <button className="view-all-button">
+        <button
+          className="view-all-button"
+          onClick={() => navigate("/leads")}
+        >
           View All <ArrowUpRight size={16} />
         </button>
       </div>
@@ -68,8 +77,12 @@ function LeadsTable() {
           </thead>
 
           <tbody>
-            {leads.map((lead) => (
-              <tr key={lead.id}>
+            {recentLeads.map((lead) => (
+              <tr
+                key={lead.id}
+                className="clickable-lead-row"
+                onClick={() => navigate(`/leads/${lead.id}`)}
+              >
                 <td>
                   <div className="lead-identity">
                     <strong>{lead.name}</strong>
@@ -98,7 +111,7 @@ function LeadsTable() {
               </tr>
             ))}
 
-            {leads.length === 0 && (
+            {recentLeads.length === 0 && (
               <tr>
                 <td colSpan={5}>No leads found.</td>
               </tr>

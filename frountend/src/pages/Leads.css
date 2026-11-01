@@ -121,3 +121,12 @@
   color: #94a3b8;
   font-size: 13px;
 }
+
+.table-wrapper tbody tr {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.table-wrapper tbody tr:hover {
+  background: #202330;
+}

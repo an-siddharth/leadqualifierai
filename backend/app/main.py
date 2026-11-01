@@ -1,28 +1,30 @@
-from app.services.lead_service import update_email_status
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.models import Lead
 
 from langgraph.types import Command
-from app.services.lead_service import update_email_draft
 
+from app.models import Lead
 from app.agents.graph import lead_graph
 from app.services.database import get_db
 from app.services.lead_service import (
     create_lead,
     get_leads,
-    get_lead_by_id
+    get_lead_by_id,
+    update_email_status,
+    update_email_draft,
 )
 from app.schemas.lead import LeadInput
 from app.schemas.email import EmailApproval
+
 
 app = FastAPI(
     title="AI Lead Qualification Agent",
     description="AI-powered lead qualification and follow-up automation",
     version="1.0.0"
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,6 +33,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def home():
@@ -66,7 +69,12 @@ def add_lead(
         },
         config=config
     )
-    update_email_status(db, new_lead.id, "awaiting_approval")
+
+    update_email_status(
+        db,
+        new_lead.id,
+        "awaiting_approval"
+    )
 
     return {
         "lead_id": new_lead.id,
@@ -109,7 +117,10 @@ def approve_lead(
     lead = get_lead_by_id(db, lead_id)
 
     if not lead:
-        raise HTTPException(status_code=404, detail="Lead not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Lead not found"
+        )
 
     if lead.email_status in ["sent", "rejected"]:
         raise HTTPException(
@@ -129,20 +140,26 @@ def approve_lead(
         }
     }
 
-    decision = {"action": approval.action}
+    decision = {
+        "action": approval.action
+    }
 
+    # EDIT EMAIL
     if approval.action == "edit":
+
         if not approval.subject or not approval.body:
             raise HTTPException(
                 status_code=400,
                 detail="Subject and body are required for editing"
             )
 
-        result = lead_graph.invoke(
-            Command(resume=decision | {
-                "subject": approval.subject,
-                "body": approval.body
-            }),
+        lead_graph.invoke(
+            Command(
+                resume=decision | {
+                    "subject": approval.subject,
+                    "body": approval.body
+                }
+            ),
             config=config
         )
 
@@ -159,36 +176,72 @@ def approve_lead(
             "message": "Email draft updated successfully"
         }
 
+    # APPROVE OR REJECT
     result = lead_graph.invoke(
         Command(resume=decision),
         config=config
     )
 
-    email_status = result.get("email_status", "unknown")
+    # APPROVE AND SEND
+    if approval.action == "approve":
 
-    if email_status in ["sent", "rejected"]:
-        update_email_status(db, lead_id, email_status)
+        # Only update status after graph completes successfully.
+        update_email_status(
+            db,
+            lead_id,
+            "sent"
+        )
 
-    return {
-        "lead_id": lead_id,
-        "email_status": email_status,
-        "gmail_message_id": result.get("gmail_message_id")
-    }
+        return {
+            "lead_id": lead_id,
+            "email_status": "sent",
+            "gmail_message_id": result.get("gmail_message_id"),
+            "message": "Email sent successfully"
+        }
+
+    # REJECT EMAIL
+    if approval.action == "reject":
+
+        update_email_status(
+            db,
+            lead_id,
+            "rejected"
+        )
+
+        return {
+            "lead_id": lead_id,
+            "email_status": "rejected",
+            "message": "Email rejected successfully"
+        }
+
+    raise HTTPException(
+        status_code=400,
+        detail="Invalid approval action"
+    )
 
 
 @app.get("/api/dashboard/stats")
 def dashboard_stats(db: Session = Depends(get_db)):
-    total_leads = db.query(func.count(Lead.id)).scalar()
 
-    high_priority = db.query(func.count(Lead.id)).filter(
+    total_leads = db.query(
+        func.count(Lead.id)
+    ).scalar()
+
+    high_priority = db.query(
+        func.count(Lead.id)
+    ).filter(
         Lead.score >= 75
     ).scalar()
 
-    pending_approvals = db.query(func.count(Lead.id)).filter(
+    pending_approvals = db.query(
+        func.count(Lead.id)
+    ).filter(
         Lead.email_status == "awaiting_approval"
     ).scalar()
 
-    emails_sent = db.query(func.count(Lead.id)).filter(
+    emails_sent = db.query(
+        func.count(Lead.id)
+    ).filter(
         Lead.email_status == "sent"
     ).scalar()
 

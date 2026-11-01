@@ -1,0 +1,249 @@
+.approvals-page {
+  padding: 28px 32px;
+  color: #e5e7eb;
+}
+
+.approvals-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.approvals-heading h2 {
+  font-size: 25px;
+  margin: 0 0 6px;
+}
+
+.approvals-heading p {
+  color: #9298a5;
+  margin: 0;
+  font-size: 14px;
+}
+
+.approvals-heading > span {
+  background: #29233d;
+  color: #b99aff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.approvals-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.approval-leads,
+.approval-editor,
+.empty-approvals {
+  background: #171923;
+  border: 1px solid #292c38;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.approval-leads h3 {
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+
+.approval-lead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 10px;
+  background: #202330;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: #e5e7eb;
+  text-align: left;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.approval-lead:hover,
+.approval-lead.selected {
+  border-color: #8b5cf6;
+  background: #29233d;
+}
+
+.approval-lead strong {
+  font-size: 14px;
+}
+
+.approval-lead span,
+.approval-lead small {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.approval-editor {
+  min-height: 400px;
+}
+
+.approval-contact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #303341;
+}
+
+.approval-contact h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.approval-contact p,
+.approval-contact > span {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.approval-details {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 15px 0 22px;
+  color: #aeb4c0;
+  font-size: 13px;
+}
+
+.approval-editor label {
+  display: block;
+  margin: 16px 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.approval-editor input,
+.approval-editor textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background: #202330;
+  border: 1px solid #363a49;
+  border-radius: 8px;
+  color: #f3f4f6;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.approval-editor input:focus,
+.approval-editor textarea:focus {
+  border-color: #8b5cf6;
+}
+
+.approval-editor textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.approval-actions button {
+  padding: 10px 17px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.approval-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.approval-actions button:first-child {
+  background: #343044;
+  color: #c4b5fd;
+}
+
+.approval-actions button:nth-child(2) {
+  background: #44252b;
+  color: #fca5a5;
+}
+
+.approval-actions button:last-child {
+  background: #7c3aed;
+  color: white;
+}
+
+.approval-actions button:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.approval-message {
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  background: #202b27;
+  color: #86efac;
+  font-size: 13px;
+}
+
+.empty-approvals {
+  text-align: center;
+  padding: 55px 20px;
+}
+
+.empty-approvals p,
+.select-approval {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.select-approval {
+  display: grid;
+  min-height: 350px;
+  place-items: center;
+}
+
+@media (max-width: 900px) {
+  .approvals-container {
+    grid-template-columns: 1fr;
+  }
+
+  .approval-leads {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .approvals-page {
+    padding: 20px 14px;
+  }
+
+  .approvals-heading {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .approval-details {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .approval-actions {
+    justify-content: stretch;
+  }
+
+  .approval-actions button {
+    flex: 1;
+  }
+}

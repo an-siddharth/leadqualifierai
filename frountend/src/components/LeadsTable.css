@@ -119,3 +119,11 @@
   color: #94a3b8;
   font-size: 11px;
 }
+.leads-table tbody tr {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.leads-table tbody tr:hover {
+  background: #202330;
+}

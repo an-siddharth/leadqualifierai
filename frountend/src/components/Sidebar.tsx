@@ -3,7 +3,8 @@ import {
   Users,
   MailCheck,
   Settings,
-  Bot
+  Bot,
+  Plus
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -33,6 +34,11 @@ function Sidebar() {
           <NavLink to="/leads" className="sidebar-link">
             <Users size={19} />
             <span>All Leads</span>
+          </NavLink>
+
+          <NavLink to="/leads/new" className="sidebar-link">
+            <Plus size={19} />
+            <span>Add New Lead</span>
           </NavLink>
 
           <NavLink to="/approvals" className="sidebar-link">

@@ -1,0 +1,170 @@
+
+.create-lead-page {
+  padding: 28px 32px;
+  color: #e5e7eb;
+}
+
+.create-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #a78bfa;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.create-lead-heading {
+  margin-bottom: 26px;
+}
+
+.create-lead-heading h2 {
+  font-size: 25px;
+  margin: 0 0 8px;
+}
+
+.create-lead-heading p {
+  color: #9298a5;
+  font-size: 14px;
+  margin: 0;
+}
+
+.create-lead-form {
+  max-width: 900px;
+  background: #171923;
+  border: 1px solid #292c38;
+  border-radius: 12px;
+  padding: 26px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #202330;
+  border: 1px solid #363a49;
+  border-radius: 7px;
+  padding: 12px 13px;
+  color: #e5e7eb;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #8b5cf6;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #737b8c;
+}
+
+.form-group select option {
+  background: #202330;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.create-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.cancel-lead-button,
+.submit-lead-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 7px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-lead-button {
+  background: #292c38;
+  color: #cbd5e1;
+}
+
+.submit-lead-button {
+  background: #7c3aed;
+  color: white;
+}
+
+.submit-lead-button:hover {
+  background: #6d28d9;
+}
+
+.submit-lead-button:disabled,
+.cancel-lead-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.create-lead-error {
+  color: #f87171;
+  font-size: 13px;
+  margin-top: 18px;
+}
+
+.loading-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 650px) {
+  .create-lead-page {
+    padding: 20px 14px;
+  }
+
+  .create-lead-form {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+}

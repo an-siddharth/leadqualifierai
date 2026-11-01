@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import "./Leads.css";
 
 interface Lead {
@@ -17,6 +18,7 @@ function Leads() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -83,7 +85,11 @@ function Leads() {
 
               <tbody>
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id}>
+                  <tr
+                    key={lead.id}
+                    className="clickable-lead-row"
+                    onClick={() => navigate(`/leads/${lead.id}`)}
+                  >
                     <td>
                       <div className="lead-name">{lead.name}</div>
                       <div className="lead-email">{lead.email}</div>
