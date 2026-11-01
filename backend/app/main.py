@@ -2,8 +2,11 @@ from app.services.lead_service import update_email_status
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import func
+from app.models import Lead
 
 from langgraph.types import Command
+from app.services.lead_service import update_email_draft
 
 from app.agents.graph import lead_graph
 from app.services.database import get_db
@@ -63,6 +66,7 @@ def add_lead(
         },
         config=config
     )
+    update_email_status(db, new_lead.id, "awaiting_approval")
 
     return {
         "lead_id": new_lead.id,
@@ -107,10 +111,16 @@ def approve_lead(
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
 
-    if lead.email_status in ["sent", "rejected", "approved"]:
+    if lead.email_status in ["sent", "rejected"]:
         raise HTTPException(
             status_code=409,
             detail=f"Email is already {lead.email_status}"
+        )
+
+    if lead.email_status != "awaiting_approval":
+        raise HTTPException(
+            status_code=409,
+            detail="Lead is not awaiting approval"
         )
 
     config = {
@@ -119,9 +129,7 @@ def approve_lead(
         }
     }
 
-    decision = {
-        "action": approval.action
-    }
+    decision = {"action": approval.action}
 
     if approval.action == "edit":
         if not approval.subject or not approval.body:
@@ -130,8 +138,26 @@ def approve_lead(
                 detail="Subject and body are required for editing"
             )
 
-        decision["subject"] = approval.subject
-        decision["body"] = approval.body
+        result = lead_graph.invoke(
+            Command(resume=decision | {
+                "subject": approval.subject,
+                "body": approval.body
+            }),
+            config=config
+        )
+
+        update_email_draft(
+            db=db,
+            lead_id=lead_id,
+            subject=approval.subject,
+            body=approval.body
+        )
+
+        return {
+            "lead_id": lead_id,
+            "email_status": "awaiting_approval",
+            "message": "Email draft updated successfully"
+        }
 
     result = lead_graph.invoke(
         Command(resume=decision),
@@ -147,4 +173,28 @@ def approve_lead(
         "lead_id": lead_id,
         "email_status": email_status,
         "gmail_message_id": result.get("gmail_message_id")
+    }
+
+
+@app.get("/api/dashboard/stats")
+def dashboard_stats(db: Session = Depends(get_db)):
+    total_leads = db.query(func.count(Lead.id)).scalar()
+
+    high_priority = db.query(func.count(Lead.id)).filter(
+        Lead.score >= 75
+    ).scalar()
+
+    pending_approvals = db.query(func.count(Lead.id)).filter(
+        Lead.email_status == "awaiting_approval"
+    ).scalar()
+
+    emails_sent = db.query(func.count(Lead.id)).filter(
+        Lead.email_status == "sent"
+    ).scalar()
+
+    return {
+        "total_leads": total_leads,
+        "high_priority": high_priority,
+        "pending_approvals": pending_approvals,
+        "emails_sent": emails_sent
     }

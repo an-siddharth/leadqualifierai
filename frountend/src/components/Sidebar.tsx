@@ -6,6 +6,7 @@ import {
   Bot
 } from "lucide-react";
 
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 function Sidebar() {
@@ -15,35 +16,37 @@ function Sidebar() {
         <div className="logo-icon">
           <Bot size={24} />
         </div>
-        <span>LeadQualifier<span className="logo-highlight">AI</span></span>
+        <span>
+          LeadQualifier<span className="logo-highlight">AI</span>
+        </span>
       </div>
 
       <div className="sidebar-section">
         <p className="sidebar-label">MENU</p>
 
         <nav className="sidebar-nav">
-          <a href="#" className="sidebar-link active">
+          <NavLink to="/" end className="sidebar-link">
             <LayoutDashboard size={19} />
             <span>Dashboard</span>
-          </a>
+          </NavLink>
 
-          <a href="#" className="sidebar-link">
+          <NavLink to="/leads" className="sidebar-link">
             <Users size={19} />
             <span>All Leads</span>
-          </a>
+          </NavLink>
 
-          <a href="#" className="sidebar-link">
+          <NavLink to="/approvals" className="sidebar-link">
             <MailCheck size={19} />
             <span>Email Approvals</span>
-          </a>
+          </NavLink>
         </nav>
       </div>
 
       <div className="sidebar-bottom">
-        <a href="#" className="sidebar-link">
+        <NavLink to="/settings" className="sidebar-link">
           <Settings size={19} />
           <span>Settings</span>
-        </a>
+        </NavLink>
       </div>
     </aside>
   );

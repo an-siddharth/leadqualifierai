@@ -68,6 +68,7 @@ builder.add_conditional_edges(
     route_after_approval,
     {
         "send_email": "send_email",
+        "human_approval": "human_approval",
         "end": END
     }
 )

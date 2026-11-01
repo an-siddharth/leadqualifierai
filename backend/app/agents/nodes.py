@@ -8,6 +8,12 @@ from app.services.lead_service import update_lead_analysis
 
 from langgraph.types import interrupt
 
+from app.services.lead_service import (
+    update_lead_analysis,
+    update_email_draft,
+    update_email_status
+)
+
 def analyze_lead(state: LeadState):
 
     lead = state["lead"]
@@ -92,6 +98,24 @@ def generate_email(state: LeadState):
 
     result = structured_llm.invoke(prompt)
 
+    db = SessionLocal()
+
+    try:
+        updated_lead = update_email_draft(
+            db=db,
+            lead_id=state["lead_id"],
+            subject=result.subject,
+            body=result.body
+        )
+
+        if not updated_lead:
+            raise ValueError(
+                f"Lead {state['lead_id']} not found"
+            )
+
+    finally:
+        db.close()
+
     return {"email_draft": result}
 
 def human_approval(state: LeadState):
@@ -110,16 +134,40 @@ def human_approval(state: LeadState):
             "email_status": "rejected"
         }
 
-    if action in ["approve", "edit"]:
+    if action == "edit":
+        subject = decision.get("subject")
+        body = decision.get("body")
+
+        if not subject or not body:
+            raise ValueError("Subject and body are required")
+
+        db = SessionLocal()
+
+        try:
+            update_email_draft(
+                db=db,
+                lead_id=state["lead_id"],
+                subject=subject,
+                body=body
+            )
+        finally:
+            db.close()
+
         return {
             "email_draft": EmailDraft(
-                subject=decision.get("subject", email.subject),
-                body=decision.get("body", email.body)
+                subject=subject,
+                body=body
             ),
+            "email_status": "awaiting_approval"
+        }
+
+    if action == "approve":
+        return {
             "email_status": "approved"
         }
 
     raise ValueError("Invalid approval action")
+
 
 def send_email_node(state: LeadState):
     lead = state["lead"]

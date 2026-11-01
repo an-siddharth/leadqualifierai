@@ -62,3 +62,22 @@ def update_email_status(db: Session, lead_id: int, status: str):
     db.refresh(lead)
 
     return lead
+
+def update_email_draft(
+    db: Session,
+    lead_id: int,
+    subject: str,
+    body: str
+):
+    lead = get_lead_by_id(db, lead_id)
+
+    if not lead:
+        return None
+
+    lead.email_subject = subject
+    lead.email_body = body
+
+    db.commit()
+    db.refresh(lead)
+
+    return lead

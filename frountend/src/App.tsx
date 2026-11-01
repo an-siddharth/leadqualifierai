@@ -1,20 +1,28 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
-import LeadsTable from "./components/LeadsTable";
+import Leads from "./pages/Leads";
+
 import "./App.css";
 
 function App() {
   return (
-    <div className="app-layout">
-      <Sidebar />
+    <BrowserRouter>
+      <div className="app-layout">
+        <Sidebar />
 
-      <main className="main-content">
-        <Header />
-        <Dashboard />
-      </main>
-      <LeadsTable />
-    </div>
+        <main className="main-content">
+          <Header />
+
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/leads" element={<Leads />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
   );
 }
 

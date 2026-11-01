@@ -1,12 +1,16 @@
-
 .dashboard {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  min-width: 0;
+  gap: 28px;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
+  width: 100%;
 }
 
 @media (max-width: 1100px) {
