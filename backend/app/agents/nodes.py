@@ -66,6 +66,7 @@ def low_priority(state: LeadState):
     }
 
 
+
 def generate_email(state: LeadState):
 
     lead = state["lead"]
@@ -74,9 +75,9 @@ def generate_email(state: LeadState):
     structured_llm = llm.with_structured_output(EmailDraft)
 
     prompt = f"""
-    You are an expert sales representative.
+    You are a professional B2B sales representative.
 
-    Write a personalized follow-up email.
+    Write a personalized, natural and professional follow-up email.
 
     Lead:
     Name: {lead.name}
@@ -92,8 +93,27 @@ def generate_email(state: LeadState):
     Reasoning: {analysis.reasoning}
     Recommended action: {analysis.recommended_action}
 
+    EMAIL FORMATTING RULES:
+
+    1. Start with: Hi {lead.name},
+    2. Add a blank line after the greeting.
+    3. Write short paragraphs, each separated by a blank line.
+    4. Keep the email concise, around 100-150 words.
+    5. Use a friendly but professional tone.
+    6. Include a clear and relevant call to action.
+    7. End with:
+       Best regards,
+       LeadQualifierAI Team
+
+    IMPORTANT:
+    - Return actual newline characters in the body.
+    - Do not write literal escaped characters like \\n.
+    - Do not put the entire email in one paragraph.
+    - Do not use Markdown headings, bullets or code blocks.
+    - Do not invent facts, promises, deadlines or capabilities.
+    - Do not repeat the lead's information unnecessarily.
+
     Generate a professional email subject and body.
-    Do not invent facts or promises.
     """
 
     result = structured_llm.invoke(prompt)
@@ -117,6 +137,7 @@ def generate_email(state: LeadState):
         db.close()
 
     return {"email_draft": result}
+
 
 def human_approval(state: LeadState):
     email = state["email_draft"]

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import "./Approvals.css";
 
@@ -7,6 +8,7 @@ interface Lead {
   email: string;
   company: string;
   service: string;
+  budget: number;
   score: number | null;
   category: string | null;
   email_status: string;
@@ -26,6 +28,9 @@ function Approvals() {
   const [processing, setProcessing] = useState(false);
 
   const API_URL = "http://localhost:8000";
+
+  const formatBudget = (budget: number) =>
+    `₹${budget.toLocaleString("en-IN")}`;
 
   const fetchApprovals = async () => {
     try {
@@ -180,7 +185,7 @@ function Approvals() {
                 <span>{lead.company}</span>
                 <small>
                   {lead.category || "Uncategorized"} · Score:{" "}
-                  {lead.score ?? "N/A"}
+                  {lead.score ?? "N/A"} · Budget: {formatBudget(lead.budget)}
                 </small>
               </button>
             ))}
@@ -208,6 +213,9 @@ function Approvals() {
                   </p>
                   <p>
                     <strong>Lead Score:</strong> {selectedLead.score ?? "N/A"}
+                    {" · "}
+                    <strong>Budget:</strong>{" "}
+                    {formatBudget(selectedLead.budget)}
                   </p>
                 </div>
 

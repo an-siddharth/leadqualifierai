@@ -1,5 +1,8 @@
 import os
 import base64
+import html
+
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from google.auth.transport.requests import Request
@@ -41,9 +44,38 @@ def get_gmail_service():
 def send_email(to, subject, body):
     service = get_gmail_service()
 
-    message = MIMEText(body)
+    # Convert plain text line breaks into HTML paragraphs
+    escaped_body = html.escape(body.strip())
+    paragraphs = escaped_body.split("\n\n")
+
+    html_body = "".join(
+        f"<p>{paragraph.replace(chr(10), '<br>')}</p>"
+        for paragraph in paragraphs
+        if paragraph.strip()
+    )
+
+    html_content = f"""
+    <html>
+      <body style="
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #333333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      ">
+        {html_body}
+      </body>
+    </html>
+    """
+
+    message = MIMEMultipart("alternative")
     message["to"] = to
     message["subject"] = subject
+
+    message.attach(MIMEText(body.strip(), "plain", "utf-8"))
+    message.attach(MIMEText(html_content, "html", "utf-8"))
 
     encoded_message = base64.urlsafe_b64encode(
         message.as_bytes()
